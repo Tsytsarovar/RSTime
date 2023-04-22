@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->stopThreadButton->setEnabled(false);
+
     if (!QSerialPortInfo::availablePorts().isEmpty())
     {
         port = new QSerialPort(QSerialPortInfo::availablePorts().at(0));
@@ -23,14 +25,14 @@ MainWindow::MainWindow(QWidget *parent)
         connect(port, SIGNAL(readyRead()), this, SLOT(portReceive()));
         qDebug() << "Port" << port->portName() << "is open";
 
-        ///port->isDataTerminalReady(); // проверка состояния линии DTR
-        ///port.setDataTerminalReady(true); // установка значения на линии DTR
-        ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
+        port->setDataTerminalReady(statusDTR);
 
+        ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
 
     } else {
         ui->pushButton->setEnabled(false);
         ui->textEdit->setEnabled(false);
+        ui->startThreadButton->setEnabled(false);
         qDebug() << "No available ports";
     }
 }
@@ -44,13 +46,8 @@ MainWindow::~MainWindow()
     delete port;
 }
 
-bool isButtonSwitch = false; // просто реакция на нажатие кнопки
-
 void MainWindow::on_pushButton_clicked()
 {
-    isButtonSwitch = !isButtonSwitch;
-    ui->label->setText(QString::number(isButtonSwitch));
-
     if (port->isOpen())
         port->write(ui->textEdit->toPlainText().toLatin1());
 }
@@ -62,4 +59,50 @@ void MainWindow::portReceive()
 
     ui->label_2->setText(data);
     qDebug() << data;
+}
+///////////////////////////////////////////////////////////////////////////
+//void MainWindow::updateTextBox(int number)
+//{
+//    ui->textEdit_2->insertPlainText(QString::number(number));
+//}
+
+void MainWindow::setDTR(int signal)
+{
+    statusDTR = !statusDTR;
+    port->setDataTerminalReady(statusDTR);
+    ui->textEdit_2->insertPlainText(QString::number(signal));
+    ui->textEdit_3->setPlainText(QString::number(port->isDataTerminalReady()));
+}
+
+void MainWindow::on_startThreadButton_clicked()
+{
+    signalsThread = new QThread;
+    signalGenerator = new SignalGenerator;
+    signalGenerator->moveToThread(signalsThread);
+
+    //connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(updateTextBox(int)));
+    connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(setDTR(int)));
+    connect(signalsThread, SIGNAL(started()), signalGenerator, SLOT(generate()));
+
+    ui->startThreadButton->setEnabled(false);
+    ui->stopThreadButton->setEnabled(true);
+
+    signalsThread->start();
+}
+
+void MainWindow::on_stopThreadButton_clicked()
+{
+    signalGenerator->stopGenerate();
+    signalsThread->quit();
+    signalsThread->wait();
+    delete signalsThread;
+    delete signalGenerator;
+
+    ui->stopThreadButton->setEnabled(false);
+    ui->startThreadButton->setEnabled(true);
+}
+
+void MainWindow::on_clearButton_clicked()
+{
+    ui->textEdit_2->clear();
 }
