@@ -10,6 +10,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     ui->stopThreadButton->setEnabled(false);
+    ui->widget->setVisible(false);
+
+    X = 0;
+    step = 0.001;
+
+    QTime a = QTime::currentTime();
+    qDebug() << QTime::currentTime().msecsTo(a);
 
     if (!QSerialPortInfo::availablePorts().isEmpty())
     {
@@ -61,18 +68,55 @@ void MainWindow::portReceive()
     qDebug() << data;
 }
 ///////////////////////////////////////////////////////////////////////////
-//void MainWindow::updateTextBox(int number)
-//{
-//    ui->textEdit_2->insertPlainText(QString::number(number));
-//}
-
 void MainWindow::setDTR(int signal)
 {
     statusDTR = !statusDTR;
     port->setDataTerminalReady(statusDTR);
     ui->textEdit_2->insertPlainText(QString::number(signal));
     ui->textEdit_3->setPlainText(QString::number(port->isDataTerminalReady()));
+
+    x.push_back(startThread.msecsTo(QTime::currentTime()) / 1000.0);
+    y.push_back((int)port->isDataTerminalReady());
+
+    //qDebug() << x[x.length() - 1];
+
+    if (x.length() == 2)
+    {
+        ui->widget->setVisible(true);
+
+        ui->widget->xAxis->setRange(0, 1); // TODO right border
+        ui->widget->yAxis->setRange(0, 2);
+
+        ui->widget->addGraph();
+        ui->widget->graph(0)->addData(x,y);
+        ui->widget->replot();
+
+    }
+
 }
+
+//void MainWindow::plotGraf()
+//{
+//    if (X < 1)
+//    {
+//        x.push_back(X);
+//        y.push_back((int)port->isDataTerminalReady());
+
+//        X += step;
+
+//    } else if (!isPlotGraf){
+//        ui->widget->setVisible(true);
+
+//        ui->widget->xAxis->setRange(0, X);
+//        ui->widget->yAxis->setRange(0, 3);
+
+//        ui->widget->addGraph();
+//        ui->widget->graph(0)->addData(x,y);
+//        ui->widget->replot();
+
+//        isPlotGraf = true;
+//    }
+//}
 
 void MainWindow::on_startThreadButton_clicked()
 {
@@ -80,14 +124,15 @@ void MainWindow::on_startThreadButton_clicked()
     signalGenerator = new SignalGenerator;
     signalGenerator->moveToThread(signalsThread);
 
-    //connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(updateTextBox(int)));
     connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(setDTR(int)));
     connect(signalsThread, SIGNAL(started()), signalGenerator, SLOT(generate()));
+    //connect(signalGenerator, SIGNAL(check()), this, SLOT(plotGraf()));
 
     ui->startThreadButton->setEnabled(false);
     ui->stopThreadButton->setEnabled(true);
 
     signalsThread->start();
+    startThread = QTime::currentTime();
 }
 
 void MainWindow::on_stopThreadButton_clicked()

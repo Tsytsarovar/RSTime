@@ -23,6 +23,7 @@ public slots:
 
 signals:
     void emitSignal(int);
+    //void check();
 };
 
 #endif // SIGNALGENERATOR_H

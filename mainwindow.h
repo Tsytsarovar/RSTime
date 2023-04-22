@@ -11,6 +11,9 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 
+#include <QVector>
+#include <QTime>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -36,6 +39,7 @@ private slots:
 
     void on_stopThreadButton_clicked();
     void setDTR(int);
+    //void plotGraf();
 
 private:
     Ui::MainWindow *ui;
@@ -43,6 +47,14 @@ private:
     QThread *signalsThread;
     SignalGenerator *signalGenerator;
     bool statusDTR = false;
+
+    bool isPlotGraf = false;
+    double step, X;
+    int pointsCount;
+
+    QVector<double> x, y;
+
+    QTime startThread;
 };
 
 #endif // MAINWINDOW_H
