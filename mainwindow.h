@@ -48,9 +48,8 @@ private:
     SignalGenerator *signalGenerator;
     bool statusDTR = false;
 
-    bool isPlotGraf = false;
-    double step, X;
-    int pointsCount;
+    //bool isPlotGraf = false;
+    int timeFrame;
 
     QVector<double> x, y;
 
