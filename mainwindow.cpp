@@ -70,6 +70,11 @@ void MainWindow::setDTR(int signal)
     port->setDataTerminalReady(statusDTR);
     QTime curTime = QTime::currentTime();
 
+/// НАНОСЕКУНДЫ ???
+//    QElapsedTimer timer;
+//    timer.start();
+//    qDebug() << timer.nsecsElapsed();
+
     ui->textEdit_2->insertPlainText(QString::number(signal));
     ui->textEdit_3->setPlainText(QString::number(port->isDataTerminalReady()));
 
@@ -109,6 +114,8 @@ void MainWindow::setDTR(int signal)
 
         i++;
     }
+
+    qDebug() << timer.nsecsElapsed();
 }
 
 //void MainWindow::plotGraf()
