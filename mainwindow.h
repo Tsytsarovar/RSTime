@@ -26,6 +26,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+//    QSerialPort *port;
+//    bool statusDTR = false;
+    void changeDTR();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -40,6 +43,11 @@ private slots:
     void on_stopThreadButton_clicked();
     void setDTR(int);
     //void plotGraf();
+
+
+    void on_openPortButton_clicked();
+
+    void on_closePortButton_clicked();
 
 private:
     Ui::MainWindow *ui;

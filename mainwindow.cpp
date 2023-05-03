@@ -9,42 +9,19 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->pushButton->setEnabled(false);
+    ui->textEdit->setEnabled(false);
+
+    ui->startThreadButton->setEnabled(false);
     ui->stopThreadButton->setEnabled(false);
+    ui->textEdit_4->setEnabled(false);
     ui->widget->setVisible(false);
-
-    if (!QSerialPortInfo::availablePorts().isEmpty())
-    {
-        port = new QSerialPort(QSerialPortInfo::availablePorts().at(0));
-
-        port->setBaudRate(QSerialPort::Baud9600);
-        port->setDataBits(QSerialPort::Data8);
-        port->setParity(QSerialPort::NoParity);
-        port->setStopBits(QSerialPort::OneStop);
-        port->setFlowControl(QSerialPort::NoFlowControl);
-
-        port->open(QIODevice::ReadWrite);
-        connect(port, SIGNAL(readyRead()), this, SLOT(portReceive()));
-        qDebug() << "Port" << port->portName() << "is open";
-
-
-
-        ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
-
-    } else {
-        ui->pushButton->setEnabled(false);
-        ui->textEdit->setEnabled(false);
-        ui->startThreadButton->setEnabled(false);
-        qDebug() << "No available ports";
-    }
+    ui->closePortButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-
-    if (port->isOpen())
-        port->close();
-    delete port;
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -115,7 +92,13 @@ void MainWindow::setDTR(int signal)
         i++;
     }
 
-    qDebug() << timer.nsecsElapsed();
+    //qDebug() << timer.nsecsElapsed();
+}
+
+void MainWindow::changeDTR()
+{
+    statusDTR = !statusDTR;
+    port->setDataTerminalReady(statusDTR);
 }
 
 //void MainWindow::plotGraf()
@@ -143,6 +126,8 @@ void MainWindow::setDTR(int signal)
 
 void MainWindow::on_startThreadButton_clicked()
 {
+    ui->closePortButton->setEnabled(false);
+
     signalsThread = new QThread;
     signalGenerator = new SignalGenerator;
     signalGenerator->moveToThread(signalsThread);
@@ -184,9 +169,68 @@ void MainWindow::on_stopThreadButton_clicked()
     ui->startThreadButton->setEnabled(true);
 
     ui->textEdit_4->setEnabled(true);
+
+    ui->closePortButton->setEnabled(true);
 }
 
 void MainWindow::on_clearButton_clicked()
 {
     ui->textEdit_2->clear();
 }
+
+void MainWindow::on_openPortButton_clicked()
+{
+    if (!QSerialPortInfo::availablePorts().isEmpty())
+    {
+        ui->pushButton->setEnabled(true);
+        ui->textEdit->setEnabled(true);
+
+        ui->openPortButton->setEnabled(false);
+
+        port = new QSerialPort(QSerialPortInfo::availablePorts().at(0));
+
+        port->setBaudRate(QSerialPort::Baud9600);
+        port->setDataBits(QSerialPort::Data8);
+        port->setParity(QSerialPort::NoParity);
+        port->setStopBits(QSerialPort::OneStop);
+        port->setFlowControl(QSerialPort::NoFlowControl);
+
+        port->open(QIODevice::ReadWrite);
+        connect(port, SIGNAL(readyRead()), this, SLOT(portReceive()));
+        qDebug() << "Port" << port->portName() << "is open";
+
+        ui->startThreadButton->setEnabled(true);
+        ui->textEdit_4->setEnabled(true);
+
+        ui->openPortText->setPlainText(port->portName());
+        ui->closePortButton->setEnabled(true);
+        ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
+
+    } else {
+        ui->openPortText->setPlainText("No available ports");
+        qDebug() << "No available ports";
+    }
+}
+
+void MainWindow::on_closePortButton_clicked()
+{
+    ui->pushButton->setEnabled(false);
+    ui->textEdit->setEnabled(false);
+
+    ui->closePortButton->setEnabled(false);
+    ui->startThreadButton->setEnabled(false);
+    ui->stopThreadButton->setEnabled(false);
+    ui->widget->setVisible(false);
+    ui->textEdit_4->setEnabled(false);
+    ui->openPortText->clear();
+
+    if (port->isOpen())
+    {
+        port->close();
+    }
+
+    delete port;
+
+    ui->openPortButton->setEnabled(true);
+}
+

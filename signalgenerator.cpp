@@ -4,7 +4,6 @@
 
 SignalGenerator::SignalGenerator()
 {
-
 }
 
 void SignalGenerator::generate()
@@ -15,12 +14,19 @@ void SignalGenerator::generate()
         int newSec = QTime::currentTime().second();
         if (curSec != newSec)
         {
+//            statusDTR = !statusDTR;
+//            port.setDataTerminalReady(statusDTR);
             emit emitSignal(newSec);
+
             //QThread::msleep(250);
+
+//            statusDTR = !statusDTR;
+//            port.setDataTerminalReady(statusDTR);
             emit emitSignal(-1);
+
             curSec = newSec;
         }
-        //QThread::msleep(250); //TODO system load
+        //QThread::msleep(250);
     }
 }
 

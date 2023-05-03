@@ -8,6 +8,9 @@
 
 #include <QDebug>
 
+#include <QSerialPort>
+#include <QSerialPortInfo>
+
 
 class SignalGenerator : public QObject
 {
@@ -15,6 +18,7 @@ class SignalGenerator : public QObject
     bool isRun = true;
 
 public:
+    //bool statusDTR = false;
     SignalGenerator();
 
 public slots:
@@ -23,7 +27,6 @@ public slots:
 
 signals:
     void emitSignal(int);
-    //void check();
 };
 
 #endif // SIGNALGENERATOR_H
