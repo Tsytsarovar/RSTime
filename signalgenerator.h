@@ -18,8 +18,9 @@ class SignalGenerator : public QObject
     bool isRun = true;
 
 public:
-    //bool statusDTR = false;
-    SignalGenerator();
+    QSerialPort *port;
+    bool statusDTR = false;
+    SignalGenerator(QSerialPort*);
 
 public slots:
     void generate();

@@ -1,9 +1,9 @@
 
 #include "signalgenerator.h"
 
-
-SignalGenerator::SignalGenerator()
+SignalGenerator::SignalGenerator(QSerialPort *port)
 {
+    this->port = port;
 }
 
 void SignalGenerator::generate()
@@ -14,14 +14,14 @@ void SignalGenerator::generate()
         int newSec = QTime::currentTime().second();
         if (curSec != newSec)
         {
-//            statusDTR = !statusDTR;
-//            port.setDataTerminalReady(statusDTR);
+            statusDTR = !statusDTR;
+            port->setDataTerminalReady(statusDTR);
             emit emitSignal(newSec);
 
             //QThread::msleep(250);
 
-//            statusDTR = !statusDTR;
-//            port.setDataTerminalReady(statusDTR);
+            statusDTR = !statusDTR;
+            port->setDataTerminalReady(statusDTR);
             emit emitSignal(-1);
 
             curSec = newSec;

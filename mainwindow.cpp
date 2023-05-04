@@ -17,6 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->textEdit_4->setEnabled(false);
     ui->widget->setVisible(false);
     ui->closePortButton->setEnabled(false);
+
+
+//    int *lol = new int(1);
+//    int *kek = new int(2);
+
+//    lol = kek;
+
+//    qDebug() << lol << *lol;
 }
 
 MainWindow::~MainWindow()
@@ -43,8 +51,8 @@ int timeCount = 0; /// TODO header?
 int i = 0;         ///
 void MainWindow::setDTR(int signal)
 {
-    statusDTR = !statusDTR;
-    port->setDataTerminalReady(statusDTR);
+//    statusDTR = !statusDTR;
+//    port->setDataTerminalReady(statusDTR);
     QTime curTime = QTime::currentTime();
 
 /// НАНОСЕКУНДЫ ???
@@ -59,7 +67,7 @@ void MainWindow::setDTR(int signal)
     x.push_back(curTimeX);
     x.push_back(curTimeX);
 
-    bool signalDTR = port->isDataTerminalReady();
+    bool signalDTR = signal == -1 ? 0 : 1;
     y.push_back((int)(!signalDTR));
     y.push_back((int)signalDTR);
 
@@ -82,7 +90,7 @@ void MainWindow::setDTR(int signal)
 
         timeCount = 0;
 
-        //qDebug() << x << y;
+        qDebug() << x << y;
         x.clear();
         y.clear();
 
@@ -93,12 +101,6 @@ void MainWindow::setDTR(int signal)
     }
 
     //qDebug() << timer.nsecsElapsed();
-}
-
-void MainWindow::changeDTR()
-{
-    statusDTR = !statusDTR;
-    port->setDataTerminalReady(statusDTR);
 }
 
 //void MainWindow::plotGraf()
@@ -129,7 +131,7 @@ void MainWindow::on_startThreadButton_clicked()
     ui->closePortButton->setEnabled(false);
 
     signalsThread = new QThread;
-    signalGenerator = new SignalGenerator;
+    signalGenerator = new SignalGenerator(port);
     signalGenerator->moveToThread(signalsThread);
 
     connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(setDTR(int)));
@@ -204,6 +206,8 @@ void MainWindow::on_openPortButton_clicked()
 
         ui->openPortText->setPlainText(port->portName());
         ui->closePortButton->setEnabled(true);
+
+
         ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
 
     } else {

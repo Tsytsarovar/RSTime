@@ -26,9 +26,6 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-//    QSerialPort *port;
-//    bool statusDTR = false;
-    void changeDTR();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
