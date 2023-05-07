@@ -147,46 +147,75 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="openPortButton">
+   <widget class="QFrame" name="portFrame">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>400</y>
-      <width>83</width>
-      <height>29</height>
+      <x>670</x>
+      <y>320</y>
+      <width>121</width>
+      <height>121</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Open Port</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="openPortText">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>370</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="readOnly">
+    <property name="autoFillBackground">
      <bool>true</bool>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QComboBox" name="portsComboBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>82</width>
+       <height>28</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="closePortButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>83</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Close Port</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="openPortButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>83</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Open Port</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QPushButton" name="closePortButton">
+   <widget class="QPushButton" name="portsButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>430</y>
+      <x>600</x>
+      <y>330</y>
       <width>83</width>
       <height>29</height>
      </rect>
     </property>
     <property name="text">
-     <string>Close Port</string>
+     <string>Ports</string>
     </property>
    </widget>
   </widget>

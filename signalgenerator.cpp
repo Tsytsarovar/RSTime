@@ -26,7 +26,7 @@ void SignalGenerator::generate()
 
             curSec = newSec;
         }
-        //QThread::msleep(250);
+        //QThread::msleep(50);
     }
 }
 

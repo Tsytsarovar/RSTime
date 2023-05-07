@@ -46,6 +46,8 @@ private slots:
 
     void on_closePortButton_clicked();
 
+    void on_portsButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSerialPort *port;

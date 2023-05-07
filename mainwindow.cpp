@@ -18,13 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->setVisible(false);
     ui->closePortButton->setEnabled(false);
 
-
-//    int *lol = new int(1);
-//    int *kek = new int(2);
-
-//    lol = kek;
-
-//    qDebug() << lol << *lol;
+    ui->portFrame->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -182,14 +176,24 @@ void MainWindow::on_clearButton_clicked()
 
 void MainWindow::on_openPortButton_clicked()
 {
-    if (!QSerialPortInfo::availablePorts().isEmpty())
+    int portIndex = -1;
+    for (int i = 0; i < QSerialPortInfo::availablePorts().length(); i++)
+    {
+        if (QSerialPortInfo::availablePorts().at(i).portName() == ui->portsComboBox->currentText())
+        {
+            portIndex = i;
+            break;
+        }
+    }
+
+    if (portIndex != -1) // !isEmpty only for 1 port!
     {
         ui->pushButton->setEnabled(true);
         ui->textEdit->setEnabled(true);
 
         ui->openPortButton->setEnabled(false);
 
-        port = new QSerialPort(QSerialPortInfo::availablePorts().at(0));
+        port = new QSerialPort(QSerialPortInfo::availablePorts().at(portIndex));
 
         port->setBaudRate(QSerialPort::Baud9600);
         port->setDataBits(QSerialPort::Data8);
@@ -203,15 +207,16 @@ void MainWindow::on_openPortButton_clicked()
 
         ui->startThreadButton->setEnabled(true);
         ui->textEdit_4->setEnabled(true);
+        ui->textEdit_4->setPlainText("1");
 
-        ui->openPortText->setPlainText(port->portName());
         ui->closePortButton->setEnabled(true);
+        ui->portsButton->setEnabled(false);
+        ui->portsComboBox->setEnabled(false);
 
 
         ///if (port.pinoutSignals() & QSerialPort::DataTerminalReadySignal) // проверка наличия сигнала на конкретной линии порта
 
     } else {
-        ui->openPortText->setPlainText("No available ports");
         qDebug() << "No available ports";
     }
 }
@@ -226,15 +231,32 @@ void MainWindow::on_closePortButton_clicked()
     ui->stopThreadButton->setEnabled(false);
     ui->widget->setVisible(false);
     ui->textEdit_4->setEnabled(false);
-    ui->openPortText->clear();
 
     if (port->isOpen())
     {
+        qDebug() << "Port" << port->portName() << "is closed";
         port->close();
     }
 
     delete port;
 
     ui->openPortButton->setEnabled(true);
+    ui->portsButton->setEnabled(true);
+
+    ui->portFrame->setVisible(false);
+    ui->portsButton->setVisible(true);
+}
+
+void MainWindow::on_portsButton_clicked()
+{
+    ui->portsComboBox->clear();
+
+    foreach (const QSerialPortInfo &curPort, QSerialPortInfo::availablePorts())
+    {
+        ui->portsComboBox->addItem(curPort.portName());
+    }
+
+    ui->portFrame->setVisible(true);
+    ui->portsComboBox->setEnabled(true);
 }
 
