@@ -15,12 +15,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->startThreadButton->setEnabled(false);
     ui->stopThreadButton->setEnabled(false);
     ui->textEdit_4->setEnabled(false);
+    ui->impulseTimeText->setEnabled(false);
     ui->widget->setVisible(false);
     ui->closePortButton->setEnabled(false);
 
     ui->portFrame->setVisible(false);
-
-    ui->textEdit_2->setText("111");
 }
 
 MainWindow::~MainWindow()
@@ -43,8 +42,7 @@ void MainWindow::portReceive()
     qDebug() << data;
 }
 ///////////////////////////////////////////////////////////////////////////
-int timeCount = 0; /// TODO header?
-int i = 0;         ///
+
 void MainWindow::setDTR(int signal)
 {
 //    statusDTR = !statusDTR;
@@ -93,9 +91,6 @@ void MainWindow::setDTR(int signal)
         x.clear();
         y.clear();
 
-        //ui->textEdit_2->clear();
-        //ui->textEdit_3->clear();
-
         i++;
     }
 
@@ -127,27 +122,32 @@ void MainWindow::setDTR(int signal)
 
 void MainWindow::on_startThreadButton_clicked()
 {
-    ui->closePortButton->setEnabled(false);
+    if (ui->impulseTimeText->toPlainText().toInt() >= 0 && ui->impulseTimeText->toPlainText().toInt() <= 750)
+    {
+        ui->closePortButton->setEnabled(false);
 
-    signalsThread = new QThread;
-    signalGenerator = new SignalGenerator(port);
-    signalGenerator->moveToThread(signalsThread);
+        signalsThread = new QThread;
+        signalGenerator = new SignalGenerator(port);
+        signalGenerator->impulseTime = ui->impulseTimeText->toPlainText().toInt();
+        signalGenerator->moveToThread(signalsThread);
 
-    connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(setDTR(int)));
-    connect(signalsThread, SIGNAL(started()), signalGenerator, SLOT(generate()));
-    //connect(signalGenerator, SIGNAL(check()), this, SLOT(plotGraf()));
+        connect(signalGenerator, SIGNAL(emitSignal(int)), this, SLOT(setDTR(int)));
+        connect(signalsThread, SIGNAL(started()), signalGenerator, SLOT(generate()));
+        //connect(signalGenerator, SIGNAL(check()), this, SLOT(plotGraf()));
 
-    ui->startThreadButton->setEnabled(false);
-    ui->stopThreadButton->setEnabled(true);
+        ui->startThreadButton->setEnabled(false);
+        ui->stopThreadButton->setEnabled(true);
 
-    timeFrame = ui->textEdit_4->toPlainText().toInt();
-    ui->textEdit_4->setEnabled(false);
+        timeFrame = ui->textEdit_4->toPlainText().toInt();
+        ui->textEdit_4->setEnabled(false);
+        ui->impulseTimeText->setEnabled(false);
 
-    statusDTR = false;
-    timeCount = 0;
+        statusDTR = false;
 
-    signalsThread->start();
-    startThread = QTime::currentTime();
+        signalsThread->start();
+        startThread = QTime::currentTime();
+    }
+    else qDebug() << "Impulse Time is wrong";
 }
 
 void MainWindow::on_stopThreadButton_clicked()
@@ -164,12 +164,14 @@ void MainWindow::on_stopThreadButton_clicked()
     ui->textEdit_2->clear();
     ui->textEdit_3->clear();
 
+    timeCount = 0;
     i = 0;
 
     ui->stopThreadButton->setEnabled(false);
     ui->startThreadButton->setEnabled(true);
 
     ui->textEdit_4->setEnabled(true);
+    ui->impulseTimeText->setEnabled(true);
 
     ui->closePortButton->setEnabled(true);
 }
@@ -208,6 +210,8 @@ void MainWindow::on_openPortButton_clicked()
         ui->startThreadButton->setEnabled(true);
         ui->textEdit_4->setEnabled(true);
         ui->textEdit_4->setPlainText("1");
+        ui->impulseTimeText->setEnabled(true);
+        ui->impulseTimeText->setPlainText("0");
 
         ui->closePortButton->setEnabled(true);
         ui->portsButton->setEnabled(false);
@@ -231,6 +235,7 @@ void MainWindow::on_closePortButton_clicked()
     ui->stopThreadButton->setEnabled(false);
     ui->widget->setVisible(false);
     ui->textEdit_4->setEnabled(false);
+    ui->impulseTimeText->setEnabled(false);
 
     if (port->isOpen())
     {

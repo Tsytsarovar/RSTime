@@ -20,6 +20,7 @@ class SignalGenerator : public QObject
 public:
     QSerialPort *port;
     bool statusDTR = false;
+    int impulseTime;
     SignalGenerator(QSerialPort*);
 
 public slots:

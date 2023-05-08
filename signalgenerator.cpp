@@ -18,7 +18,10 @@ void SignalGenerator::generate()
             port->setDataTerminalReady(true);
             emit emitSignal(newSec);
 
-            //QThread::msleep(250);
+            QThread::msleep(impulseTime);
+
+            if (!isRun)
+                break;
 
             //statusDTR = !statusDTR;
             port->setDataTerminalReady(false);
@@ -26,7 +29,7 @@ void SignalGenerator::generate()
 
             curSec = newSec;
         }
-        //QThread::msleep(50);
+        QThread::msleep(0);
     }
 }
 

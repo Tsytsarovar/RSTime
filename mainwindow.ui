@@ -235,6 +235,22 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Ports</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="impulseTimeText">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>290</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

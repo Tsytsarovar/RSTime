@@ -59,6 +59,9 @@ private:
     QVector<double> x, y;
 
     QTime startThread;
+
+    int timeCount = 0;
+    int i = 0;
 };
 
 #endif // MAINWINDOW_H
