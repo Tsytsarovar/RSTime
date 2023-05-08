@@ -35,8 +35,6 @@ private slots:
 
     void on_startThreadButton_clicked();
 
-    void on_clearButton_clicked();
-
     void on_stopThreadButton_clicked();
     void setDTR(int);
     //void plotGraf();

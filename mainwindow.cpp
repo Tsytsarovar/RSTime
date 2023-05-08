@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->closePortButton->setEnabled(false);
 
     ui->portFrame->setVisible(false);
+
+    ui->textEdit_2->setText("111");
 }
 
 MainWindow::~MainWindow()
@@ -54,7 +56,10 @@ void MainWindow::setDTR(int signal)
 //    timer.start();
 //    qDebug() << timer.nsecsElapsed();
 
-    ui->textEdit_2->insertPlainText(QString::number(signal));
+
+    if (signal >= 0)
+        ui->textEdit_2->setPlainText(QString::number(signal));
+
     ui->textEdit_3->setPlainText(QString::number(port->isDataTerminalReady()));
 
     double curTimeX = startThread.msecsTo(curTime) / 1000.0 - timeFrame*i;
@@ -88,8 +93,8 @@ void MainWindow::setDTR(int signal)
         x.clear();
         y.clear();
 
-        ui->textEdit_2->clear();
-        ui->textEdit_3->clear();
+        //ui->textEdit_2->clear();
+        //ui->textEdit_3->clear();
 
         i++;
     }
@@ -169,11 +174,6 @@ void MainWindow::on_stopThreadButton_clicked()
     ui->closePortButton->setEnabled(true);
 }
 
-void MainWindow::on_clearButton_clicked()
-{
-    ui->textEdit_2->clear();
-}
-
 void MainWindow::on_openPortButton_clicked()
 {
     int portIndex = -1;
@@ -186,7 +186,7 @@ void MainWindow::on_openPortButton_clicked()
         }
     }
 
-    if (portIndex != -1) // !isEmpty only for 1 port!
+    if (portIndex != -1)
     {
         ui->pushButton->setEnabled(true);
         ui->textEdit->setEnabled(true);
