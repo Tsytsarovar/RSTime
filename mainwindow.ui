@@ -14,48 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>221</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>221</width>
-      <height>85</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>10</y>
-      <width>151</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEdit_2">
     <property name="geometry">
      <rect>
@@ -249,6 +207,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
     </property>
     <property name="readOnly">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="connectMenuButton">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>60</y>
+      <width>161</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Send/Receive Menu</string>
     </property>
    </widget>
   </widget>

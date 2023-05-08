@@ -9,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->pushButton->setEnabled(false);
-    ui->textEdit->setEnabled(false);
+    ui->connectMenuButton->setEnabled(false);
 
     ui->startThreadButton->setEnabled(false);
     ui->stopThreadButton->setEnabled(false);
@@ -26,22 +25,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-void MainWindow::on_pushButton_clicked()
-{
-    if (port->isOpen())
-        port->write(ui->textEdit->toPlainText().toLatin1());
-}
-
-void MainWindow::portReceive()
-{
-    QByteArray data;
-    data = port->readAll();
-
-    ui->label_2->setText(data);
-    qDebug() << data;
-}
-///////////////////////////////////////////////////////////////////////////
 
 void MainWindow::setDTR(int signal)
 {
@@ -126,6 +109,8 @@ void MainWindow::on_startThreadButton_clicked()
     {
         ui->closePortButton->setEnabled(false);
 
+        ui->connectMenuButton->setEnabled(false);
+
         signalsThread = new QThread;
         signalGenerator = new SignalGenerator(port);
         signalGenerator->impulseTime = ui->impulseTimeText->toPlainText().toInt();
@@ -174,6 +159,8 @@ void MainWindow::on_stopThreadButton_clicked()
     ui->impulseTimeText->setEnabled(true);
 
     ui->closePortButton->setEnabled(true);
+
+    ui->connectMenuButton->setEnabled(true);
 }
 
 void MainWindow::on_openPortButton_clicked()
@@ -190,8 +177,7 @@ void MainWindow::on_openPortButton_clicked()
 
     if (portIndex != -1)
     {
-        ui->pushButton->setEnabled(true);
-        ui->textEdit->setEnabled(true);
+        ui->connectMenuButton->setEnabled(true);
 
         ui->openPortButton->setEnabled(false);
 
@@ -204,14 +190,14 @@ void MainWindow::on_openPortButton_clicked()
         port->setFlowControl(QSerialPort::NoFlowControl);
 
         port->open(QIODevice::ReadWrite);
-        connect(port, SIGNAL(readyRead()), this, SLOT(portReceive()));
+
         qDebug() << "Port" << port->portName() << "is open";
 
         ui->startThreadButton->setEnabled(true);
         ui->textEdit_4->setEnabled(true);
         ui->textEdit_4->setPlainText("1");
         ui->impulseTimeText->setEnabled(true);
-        ui->impulseTimeText->setPlainText("0");
+        ui->impulseTimeText->setPlainText("500");
 
         ui->closePortButton->setEnabled(true);
         ui->portsButton->setEnabled(false);
@@ -227,8 +213,7 @@ void MainWindow::on_openPortButton_clicked()
 
 void MainWindow::on_closePortButton_clicked()
 {
-    ui->pushButton->setEnabled(false);
-    ui->textEdit->setEnabled(false);
+    ui->connectMenuButton->setEnabled(false);
 
     ui->closePortButton->setEnabled(false);
     ui->startThreadButton->setEnabled(false);
@@ -250,6 +235,9 @@ void MainWindow::on_closePortButton_clicked()
 
     ui->portFrame->setVisible(false);
     ui->portsButton->setVisible(true);
+
+    ui->textEdit_4->setPlainText("1");
+    ui->impulseTimeText->setPlainText("500");
 }
 
 void MainWindow::on_portsButton_clicked()
@@ -258,10 +246,18 @@ void MainWindow::on_portsButton_clicked()
 
     foreach (const QSerialPortInfo &curPort, QSerialPortInfo::availablePorts())
     {
-        ui->portsComboBox->addItem(curPort.portName());
+        if (!curPort.isBusy())
+            ui->portsComboBox->addItem(curPort.portName());
     }
 
     ui->portFrame->setVisible(true);
     ui->portsComboBox->setEnabled(true);
+}
+
+void MainWindow::on_connectMenuButton_clicked()
+{
+    this->hide();
+    cm = new ConnectMenu(this, port);
+    cm->show();
 }
 

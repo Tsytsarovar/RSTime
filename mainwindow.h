@@ -3,6 +3,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "connectmenu.h"
 
 #include <QThread>
 #include <signalgenerator.h>
@@ -30,8 +31,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-    void portReceive();
 
     void on_startThreadButton_clicked();
 
@@ -46,8 +45,12 @@ private slots:
 
     void on_portsButton_clicked();
 
+    void on_connectMenuButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+    ConnectMenu *cm;
+
     QSerialPort *port;
     QThread *signalsThread;
     SignalGenerator *signalGenerator;
