@@ -256,8 +256,8 @@ void MainWindow::on_portsButton_clicked()
 
 void MainWindow::on_connectMenuButton_clicked()
 {
-    this->hide();
     cm = new ConnectMenu(this, port);
     cm->show();
+    this->close();
 }
 

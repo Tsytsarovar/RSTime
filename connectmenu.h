@@ -19,6 +19,7 @@ class ConnectMenu : public QMainWindow
 
 public:
     QSerialPort *port;
+    QSerialPort *porttwin;
     explicit ConnectMenu(QWidget *parent = nullptr, QSerialPort *port = nullptr);
 
     void closeEvent(QCloseEvent *event);
@@ -26,8 +27,11 @@ public:
     ~ConnectMenu();
 
 private slots:
-    void on_pushButton_clicked();
-    void portReceive();
+    void on_send1Button_clicked();
+    void port1Receive();
+
+    void on_send2Button_clicked();
+    void port2Receive();
 
 private:
     Ui::ConnectMenu *ui;
