@@ -15,7 +15,7 @@ void SignalGenerator::generate()
         if (curSec != newSec)
         {
             //statusDTR = !statusDTR;
-            port->setDataTerminalReady(true);
+            port->setRequestToSend(true);
             emit emitSignal(newSec);
 
             QThread::msleep(impulseTime);
@@ -24,7 +24,7 @@ void SignalGenerator::generate()
                 break;
 
             //statusDTR = !statusDTR;
-            port->setDataTerminalReady(false);
+            port->setRequestToSend(false);
             emit emitSignal(-1);
 
             curSec = newSec;
